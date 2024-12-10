@@ -20,6 +20,7 @@ exports.sendEmailOtp = async (req, res, next) => {
 exports.sendPhoneOtp = async (req, res, next) => {
     try {
         const { phone } = req.body;
+        console.log("phone: ",req)
         if (!phone) {
             return res.status(400).json({ error: 'Phone number is required' });
         }

@@ -5,6 +5,6 @@ const otpRoutes = require('./otpRoutes');
 const router = express.Router();
 
 router.use('/auth', authRoutes);
-router.use('/otp', otpRoutes);
+router.use('/verify', otpRoutes);
 
 module.exports = router;

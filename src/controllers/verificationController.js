@@ -6,7 +6,6 @@ const { getInstagramUserDetails } = require('../services/instagramService');
 exports.verifyEmail = async (req, res, next) => {
     try {
         const { email, otp } = req.body;
-
         const isValid = await validateOTP(email, otp, 'email');
         if (!isValid) {
             return res.status(400).json({ error: 'Invalid or expired OTP' });
@@ -22,8 +21,9 @@ exports.verifyEmail = async (req, res, next) => {
 exports.verifyPhone = async (req, res, next) => {
     try {
         const { phone, otp } = req.body;
-
+        console.log(phone, otp);
         const isValid = await validateOTP(phone, otp, 'phone');
+        console.log(isValid);
         if (!isValid) {
             return res.status(400).json({ error: 'Invalid or expired OTP' });
         }

@@ -24,9 +24,11 @@ exports.sendPhoneOTP = async (phone) => {
 
 // Validate OTP
 exports.validateOTP = async (identifier, otp, type) => {
+    console.log(otpStore, ": otpStore");
     const storedOtp = otpStore.get(identifier);
+    console.log(storedOtp, otp, type, identifier);
     const expiry = otpStore.get(`${identifier}_expires`);
-
+    console.log(expiry, " :expiry");
     if (!storedOtp || !expiry || expiry < Date.now()) {
         return false;
     }
