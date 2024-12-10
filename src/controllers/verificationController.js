@@ -38,8 +38,9 @@ exports.verifyPhone = async (req, res, next) => {
 exports.verifyInstagram = async (req, res, next) => {
     try {
         const { instagram } = req.body;
-
+        console.log("instagram : ",instagram);
         const userDetails = await getInstagramUserDetails(instagram);
+        console.log("userDetails : ",userDetails);
         if (userDetails.error) {
             return res.status(400).json({ error: userDetails.error });
         }

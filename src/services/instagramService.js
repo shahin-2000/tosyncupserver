@@ -1,24 +1,38 @@
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
-
-exports.getInstagramUserDetails = async (username) => {
-    const scriptPath = path.join(__dirname, '../python/instagram_user_details.py');
-
+// Function to get Instagram user details
+exports.getInstagramUserDetails = (username) => {
     return new Promise((resolve, reject) => {
-        exec(`python3 ${scriptPath} ${username}`, (error, stdout, stderr) => {
-            if (error) {
-                return reject(new Error(`Error executing Python script: ${stderr || error.message}`));
-            }
+        const scriptPath = path.resolve(__dirname, '../python/instagram_user_details.py');
+        console.log(scriptPath, " :scriptPath");
+        const pythonProcess = spawn('python3', [scriptPath, username]);
+        // console.log("pythonProcess: ", pythonProcess)
+        let data = '';
+        let error = '';
 
-            try {
-                const result = JSON.parse(stdout);
-                if (result.error) {
-                    return reject(new Error(result.error));
+        // Capture stdout
+        pythonProcess.stdout.on('data', (chunk) => {
+            data += chunk.toString();
+            console.log(data, " :data");
+        });
+
+        // Capture stderr
+        pythonProcess.stderr.on('data', (chunk) => {
+            error += chunk.toString();
+        });
+
+        // Handle script completion
+        pythonProcess.on('close', (code) => {
+            if (code === 0) {
+                try {
+                    const result = JSON.parse(data);
+                    resolve(result);
+                } catch (err) {
+                    reject({ error: 'Invalid JSON output from Python script.' });
                 }
-                resolve(result);
-            } catch (parseError) {
-                reject(new Error('Failed to parse Python script output.'));
+            } else {
+                reject({ error: error || 'Python script failed with exit code ' + code });
             }
         });
     });
-};
+}
